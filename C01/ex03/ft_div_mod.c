@@ -6,12 +6,14 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 13:35:24 by vegret            #+#    #+#             */
-/*   Updated: 2022/07/07 13:42:19 by vegret           ###   ########.fr       */
+/*   Updated: 2022/07/07 19:22:41 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 void	ft_div_mod(int a, int b, int *div, int *mod)
 {
+	if (b == 0)
+		return ;
 	*div = a / b;
 	*mod = a % b;
 }

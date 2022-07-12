@@ -6,7 +6,7 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/07 13:42:13 by vegret            #+#    #+#             */
-/*   Updated: 2022/07/07 13:50:29 by vegret           ###   ########.fr       */
+/*   Updated: 2022/07/07 18:50:11 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@ void	ft_ultimate_div_mod(int *a, int *b)
 {
 	int	tmp;
 
+	if (*b == 0)
+		return ;
 	tmp = *a;
 	*a = *a / *b;
 	*b = tmp % *b;
