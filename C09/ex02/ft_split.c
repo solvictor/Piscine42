@@ -6,115 +6,107 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 18:35:38 by vegret            #+#    #+#             */
-/*   Updated: 2022/07/22 14:40:15 by vegret           ###   ########.fr       */
+/*   Updated: 2022/07/26 20:20:37 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
 
-int	str_index(char *str, char c)
+int	ft_str_contains(char c, char *str)
 {
-	int	index;
-
-	index = 0;
-	while (str[index] != '\0')
-	{
-		if (str[index] == c)
-			return (index);
-		index++;
-	}
-	return (-1);
-}
-
-int	nb_words(char *str, char *charset)
-{
-	int	nb_words;
-	int	on_word;
-	int	i;
-
-	nb_words = 0;
-	on_word = 0;
-	i = 0;
-	while (str[i] != '\0')
-	{
-		if (str_index(charset, str[i++]) == -1)
-			on_word = 1;
-		else if (on_word)
-		{
-			nb_words++;
-			on_word = 0;
-		}
-	}
-	if (on_word)
-		nb_words++;
-	return (nb_words);
-}
-
-int	*words_lengths(char *str, char *charset)
-{
-	int	*result;
-	int	index;
 	int	i;
 
 	i = 0;
-	index = 0;
-	result = malloc(nb_words(str, charset) * sizeof(int));
-	if (result == NULL)
-		return (NULL);
-	while (str[i] != '\0')
+	while (str[i])
 	{
-		if (str_index(charset, str[i]) == -1)
+		if (c == str[i])
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	strings_copy(char *str, char *charset, char **strs)
+{
+	int	i;
+	int	k;
+	int	end_last;
+
+	i = 0;
+	k = 0;
+	while (str[i])
+	{
+		while (ft_str_contains(str[i], charset) && str[i])
+			i++;
+		end_last = i;
+		while (!(ft_str_contains(str[i], charset)) && str[i])
 		{
-			result[index]++;
+			strs[k][i - end_last] = str[i];
 			i++;
 		}
-		else
-		{
-			while (str_index(charset, str[i]) != -1)
-				i++;
-			index++;
-		}
+		if (i > end_last)
+			k++;
 	}
-	return (result);
 }
 
-void	str_cpy(char *charset, char *str, int *i, char *dest)
+void	strings_alloc(char *str, char *charset, char **strs)
 {
-	int	j;
+	int	i;
+	int	k;
+	int	end_last;
 
-	j = *i;
-	while (str_index(charset, str[*i]) == -1 && str[*i] != '\0')
+	i = 0;
+	k = 0;
+	while (str[i])
 	{
-		dest[*i - j] = str[*i];
-		(*i)++;
+		while (ft_str_contains(str[i], charset) && str[i])
+			i++;
+		end_last = i;
+		while (!(ft_str_contains(str[i], charset)) && str[i])
+			i++;
+		if (i > end_last)
+		{
+			strs[k] = malloc(sizeof strs[k] * (i - end_last + 1));
+			strs[k][i - end_last] = '\0';
+			k++;
+		}
 	}
-	dest[*i - j] = '\0';
+}
+
+char	**words_alloc(char *str, char *charset, int *len_strs)
+{
+	char	**strs;
+	int		i;
+	int		end_last;
+
+	i = 0;
+	while (str[i])
+	{
+		while (ft_str_contains(str[i], charset) && str[i])
+			i++;
+		end_last = i;
+		while (!(ft_str_contains(str[i], charset)) && str[i])
+			i++;
+		if (i > end_last)
+			(*len_strs)++;
+	}
+	strs = malloc(sizeof strs * (*len_strs + 1));
+	if (strs == NULL)
+		return (NULL);
+	strs[*len_strs] = NULL;
+	return (strs);
 }
 
 char	**ft_split(char *str, char *charset)
 {
-	char	**result;
-	int		*lengths;
-	int		i;
-	int		index;
+	char	**strs;
+	int		len_strs;
 
-	result = malloc(nb_words(str, charset) * sizeof(char *));
-	if (result == NULL)
-		return (NULL);
-	i = 0;
-	index = 0;
-	lengths = words_lengths(str, charset);
-	while (str[i] != '\0' && str_index(charset, str[i]) != -1)
-		i++;
-	while (str[i] != '\0' && index < nb_words(str, charset))
-	{
-		result[index] = malloc((lengths[index] + 1) * sizeof(char));
-		if (result[index] == NULL)
-			return (NULL);
-		str_cpy(charset, str, &i, result[index]);
-		while (str[i] != '\0' && str_index(charset, str[i]) != -1)
-			i++;
-		index++;
-	}
-	return (result);
+	len_strs = 0;
+	strs = words_alloc(str, charset, &len_strs);
+	if (len_strs == 0)
+		return (strs);
+	strings_alloc(str, charset, strs);
+	strings_copy(str, charset, strs);
+	return (strs);
 }

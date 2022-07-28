@@ -6,13 +6,14 @@
 /*   By: vegret <victor.egret.pro@gmail.com>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/07/18 18:35:38 by vegret            #+#    #+#             */
-/*   Updated: 2022/07/26 20:20:38 by vegret           ###   ########.fr       */
+/*   Updated: 2022/07/27 23:09:11 by vegret           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
+#include "ft.h"
 
-int	ft_str_contains(char c, char *str)
+int	ft_str_contains(char *str, char c)
 {
 	int	i;
 
@@ -30,21 +31,21 @@ void	strings_copy(char *str, char *charset, char **strs)
 {
 	int	i;
 	int	k;
-	int	start;
+	int	end_last;
 
 	i = 0;
 	k = 0;
 	while (str[i])
 	{
-		while (ft_str_contains(str[i], charset) && str[i])
+		while (ft_str_contains(charset, str[i]) && str[i])
 			i++;
-		start = i;
-		while (!(ft_str_contains(str[i], charset)) && str[i])
+		end_last = i;
+		while (!(ft_str_contains(charset, str[i])) && str[i])
 		{
-			strs[k][i - start] = str[i];
+			strs[k][i - end_last] = str[i];
 			i++;
 		}
-		if (i > start)
+		if (i > end_last)
 			k++;
 	}
 }
@@ -53,21 +54,21 @@ void	strings_alloc(char *str, char *charset, char **strs)
 {
 	int	i;
 	int	k;
-	int	start;
+	int	end_last;
 
 	i = 0;
 	k = 0;
 	while (str[i])
 	{
-		while (ft_str_contains(str[i], charset) && str[i])
+		while (ft_str_contains(charset, str[i]) && str[i])
 			i++;
-		start = i;
-		while (!(ft_str_contains(str[i], charset)) && str[i])
+		end_last = i;
+		while (!(ft_str_contains(charset, str[i])) && str[i])
 			i++;
-		if (i > start)
+		if (i > end_last)
 		{
-			strs[k] = malloc(sizeof strs[k] * (i - start + 1));
-			strs[k][i - start] = '\0';
+			strs[k] = malloc(sizeof(char *) * (i - end_last + 1));
+			strs[k][i - end_last] = '\0';
 			k++;
 		}
 	}
@@ -77,20 +78,20 @@ char	**words_alloc(char *str, char *charset, int *len_strs)
 {
 	char	**strs;
 	int		i;
-	int		start;
+	int		end_last;
 
 	i = 0;
 	while (str[i])
 	{
-		while (ft_str_contains(str[i], charset) && str[i])
+		while (ft_str_contains(charset, str[i]) && str[i])
 			i++;
-		start = i;
-		while (!(ft_str_contains(str[i], charset)) && str[i])
+		end_last = i;
+		while (!(ft_str_contains(charset, str[i])) && str[i])
 			i++;
-		if (i > start)
+		if (i > end_last)
 			(*len_strs)++;
 	}
-	strs = malloc(sizeof strs * (*len_strs + 1));
+	strs = malloc(sizeof(char **) * (*len_strs + 1));
 	if (strs == NULL)
 		return (NULL);
 	strs[*len_strs] = NULL;
